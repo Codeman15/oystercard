@@ -66,17 +66,13 @@ describe Oystercard do
     it { is_expected.to respond_to(:in_journey?) }
   end
 
+let(:journey){ {entry_station: station, exit_station: station} }
   it 'records all staions' do
     subject.top_up(10)
     subject.touch_in(station)
     subject.touch_out(station)
-    expect(subject.all_stations).to eq [station, station]
+    expect(subject.all_stations).to include journey
   end
 
-
-
-
-
-
-
+  
 end
