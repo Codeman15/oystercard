@@ -3,6 +3,7 @@ require 'Oystercard'
 
 describe Oystercard do
   let(:station){ double :station }
+
   describe '#initialize' do
     it 'it has a balance of zero' do
       expect(subject.balance).to eq 0
@@ -44,19 +45,19 @@ describe Oystercard do
     it 'in_journey becomes false if touch_out is called' do
       subject.top_up(5)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.in_journey?).to be_falsey
     end
     it 'deduct fare from card' do
       min_fare = Oystercard::MIN_FARE
       subject.top_up(10)
       subject.touch_in(station)
-      expect{ subject.touch_out}.to change{ subject.balance }.by -(min_fare)
+      expect{ subject.touch_out(station) }.to change{ subject.balance }.by -(min_fare)
     end
     it 'forgets entry staion on touch out' do
       subject.top_up(10)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.entry_station).to eq nil
     end
   end
@@ -64,6 +65,14 @@ describe Oystercard do
   describe '#in_journey?' do
     it { is_expected.to respond_to(:in_journey?) }
   end
+
+  it 'records all staions' do
+    subject.top_up(10)
+    subject.touch_in(station)
+    subject.touch_out(station)
+    expect(subject.all_stations).to eq [station, station]
+  end
+
 
 
 
